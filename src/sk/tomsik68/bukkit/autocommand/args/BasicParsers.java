@@ -54,6 +54,6 @@ public class BasicParsers {
         public Object parse(String str) throws ArgumentParserException {
             return trueList.contains(str.toLowerCase());
         }
-
     }
+
 }

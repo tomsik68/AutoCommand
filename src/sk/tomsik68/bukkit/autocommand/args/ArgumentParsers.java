@@ -19,14 +19,25 @@ public class ArgumentParsers {
     }
 
     public static Object[] parse(Class[] classes, String[] args) throws ArgumentParserException {
-
+        ArrayList<Object> resultList = new ArrayList<Object>();
         // 1) split up args also based on quotes
         args = convertArgs(args);
         // 2) each class needs to be parsed from args list
-        for (String arg : args) {
-
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            Class<?> clz = classes[i];
+            Object obj = parse(arg, clz);
+            resultList.add(obj);
         }
-        return null;
+        return resultList.toArray(new Object[0]);
+    }
+
+    private static Object parse(String arg, Class<?> clz) throws ArgumentParserException {
+        if (!availableParsers.containsKey(clz))
+            throw new ArgumentParserException("No parser registered for " + clz.getName());
+        ArgumentParser parser = availableParsers.get(clz);
+        return parser.parse(arg);
+
     }
 
     static String[] convertArgs(String[] args) {

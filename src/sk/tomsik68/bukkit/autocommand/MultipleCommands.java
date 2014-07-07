@@ -3,11 +3,12 @@ package sk.tomsik68.bukkit.autocommand;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 
+import sk.tomsik68.bukkit.autocommand.err.CommandRegistrationException;
 import sk.tomsik68.bukkit.autocommand.err.InvalidArgumentCountException;
-import sk.tomsik68.bukkit.autocommand.err.NoPermissionException;
 import sk.tomsik68.bukkit.autocommand.err.NoSuchCommandException;
 import sk.tomsik68.permsguru.EPermissions;
 
@@ -19,13 +20,30 @@ public class MultipleCommands implements CustomCommandExecutor {
         this.help = help;
     }
 
-    public void registerCommands(Class<?> clazz) {
+    public void registerCommands(Object obj) throws CommandRegistrationException {
+        Validate.notNull(obj);
+        Class<?> clazz = obj.getClass();
         Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             if (method.isAnnotationPresent(AutoCommand.class)) {
-                
+                AutoCommand annotation = method.getAnnotation(AutoCommand.class);
+                String name = annotation.name();
+                if (name == null || name.length() == 0) {
+                    name = method.getName();
+                }
+                registerCommand(name, new SingleCommand(method, obj));
             }
         }
+    }
+
+    public void registerCommand(String name, CustomCommandExecutor cmd) throws CommandRegistrationException {
+        Validate.notNull(name, "Name must be specified!");
+        if (name.length() == 0)
+            throw new IllegalArgumentException("Name must be specified!");
+        Validate.notNull(cmd);
+        if (subCommands.containsKey(name))
+            throw new CommandRegistrationException("Such command already exists: " + name);
+        subCommands.put(name, cmd);
     }
 
     @Override
@@ -53,11 +71,24 @@ public class MultipleCommands implements CustomCommandExecutor {
             throw new NoSuchCommandException();
         }
         CustomCommandExecutor subCommand = subCommands.get(subCommandName);
-        if (!perms.has(sender, subCommand.getPermission()))
-            throw new NoPermissionException();
-        String[] args2 = new String[args.length - 1];
-        System.arraycopy(args, 0, args2, 1, args.length - 1);
+
+        String[] args2;
+        if (args.length > 0) {
+            args2 = new String[args.length - 1];
+            System.arraycopy(args, 0, args2, 1, args.length - 1);
+        } else
+            args2 = args;
         subCommand.runCommand(sender, perms, args2);
+    }
+
+    @Override
+    public boolean isConsoleCommand() {
+        return true;
+    }
+
+    @Override
+    public boolean isPlayerCommand() {
+        return true;
     }
 
 }

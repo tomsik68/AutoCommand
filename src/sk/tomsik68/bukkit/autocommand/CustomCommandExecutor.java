@@ -12,5 +12,9 @@ public interface CustomCommandExecutor {
 
     public String getPermission();
 
+    public boolean isConsoleCommand();
+
+    public boolean isPlayerCommand();
+
     public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws CommandException;
 }

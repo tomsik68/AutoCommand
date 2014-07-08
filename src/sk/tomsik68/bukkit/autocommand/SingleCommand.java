@@ -50,7 +50,7 @@ public class SingleCommand implements CustomCommandExecutor {
             Object[] finalObjectArgs = new Object[objectArgs.length + 1];
             System.arraycopy(objectArgs, 0, finalObjectArgs, 1, objectArgs.length);
             finalObjectArgs[0] = sender;
-            method.invoke(obj, finalObjectArgs);
+            method.invoke(obj, objectArgs);
         } catch (Exception e) {
             throw new CommandException("Method failed to invoke :(", e);
         }

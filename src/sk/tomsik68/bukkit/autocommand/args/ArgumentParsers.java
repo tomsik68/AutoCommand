@@ -18,14 +18,14 @@ public class ArgumentParsers {
         availableParsers.put(clazz, parser);
     }
 
-    public static Object[] parse(Class[] classes, String[] args) throws ArgumentParserException {
+    public static Object[] parse(Class<?>[] classes, String[] args) throws ArgumentParserException {
         ArrayList<Object> resultList = new ArrayList<Object>();
         // 1) split up args also based on quotes
         args = convertArgs(args);
         // 2) each class needs to be parsed from args list
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            Class<?> clz = classes[i];
+            Class<?> clz = classes[i+1];
             Object obj = parse(arg, clz);
             resultList.add(obj);
         }

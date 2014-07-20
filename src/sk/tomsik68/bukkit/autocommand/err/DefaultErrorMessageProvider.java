@@ -17,4 +17,9 @@ public class DefaultErrorMessageProvider implements IErrorMessageProvider {
         return "Unknown command!";
     }
 
+    @Override
+    public String unknownError() {
+        return "Unknown error occured!";
+    }
+
 }

@@ -1,5 +1,6 @@
 package sk.tomsik68.bukkit.autocommand;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -25,9 +26,9 @@ public class MultipleCommands implements CustomCommandExecutor {
         Class<?> clazz = obj.getClass();
         Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
-            if (method.isAnnotationPresent(AutoCommand.class)) {
-                AutoCommand annotation = method.getAnnotation(AutoCommand.class);
-                String name = annotation.name();
+            AutoCommand annotation = method.getAnnotation(AutoCommand.class);
+            if (annotation != null) {
+                String name = ((AutoCommand) annotation).name();
                 if (name == null || name.length() == 0) {
                     name = method.getName();
                 }
@@ -73,7 +74,7 @@ public class MultipleCommands implements CustomCommandExecutor {
         CustomCommandExecutor subCommand = subCommands.get(subCommandName);
 
         String[] args2;
-        if (args.length > 0) {
+        if (args.length > 1) {
             args2 = new String[args.length - 1];
             System.arraycopy(args, 0, args2, 1, args.length - 1);
         } else

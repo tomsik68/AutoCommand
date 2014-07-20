@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class TestArgumentConverter {
+public class TestArgumentSplitter {
 
     @Test
     public void test() {
@@ -13,7 +13,7 @@ public class TestArgumentConverter {
         String[] goodArgs = new String[] {
                 "stopat", "world of derp", "something number one", "something2"
         };
-        String[] converted = ArgumentParsers.convertArgs(badArgs);
+        String[] converted = ArgumentParsers.getArgumentsFromArray(badArgs);
         System.out.println("==================================");
         for(String c : converted)
             System.out.println(c);

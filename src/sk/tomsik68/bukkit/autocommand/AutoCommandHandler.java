@@ -3,6 +3,7 @@ package sk.tomsik68.bukkit.autocommand;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
@@ -38,6 +39,9 @@ public class AutoCommandHandler implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + errorMessages.unknownCommand());
         } catch (NoPermissionException npmsne) {
             sender.sendMessage(ChatColor.RED + errorMessages.noPermission());
+        } catch (Throwable t) {
+            sender.sendMessage(ChatColor.RED + errorMessages.unknownError());
+            t.printStackTrace();
         }
 
         return true;

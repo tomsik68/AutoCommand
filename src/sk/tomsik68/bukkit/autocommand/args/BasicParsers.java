@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BasicParsers {
-    static {
+    public static void registerBasicParsers() {
         ArgumentParsers.registerArgumentParser(Integer.TYPE, new IntParser());
         ArgumentParsers.registerArgumentParser(Integer.class, new IntParser());
         ArgumentParsers.registerArgumentParser(Double.TYPE, new DoubleParser());

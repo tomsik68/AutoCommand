@@ -21,11 +21,12 @@ public class ArgumentParsers {
     public static Object[] parse(Class<?>[] classes, String[] args) throws ArgumentParserException {
         ArrayList<Object> resultList = new ArrayList<Object>();
         // 1) split up args also based on quotes
-        args = convertArgs(args);
+        args = getArgumentsFromArray(args);
         // 2) each class needs to be parsed from args list
-        for (int i = 0; i < args.length; i++) {
+        for (int i = 0; i < args.length && i < classes.length-1; i++) {
             String arg = args[i];
-            Class<?> clz = classes[i+1];
+            // classes[0] is always command sender
+            Class<?> clz = classes[i + 1];
             Object obj = parse(arg, clz);
             resultList.add(obj);
         }
@@ -40,7 +41,7 @@ public class ArgumentParsers {
 
     }
 
-    static String[] convertArgs(String[] args) {
+    static String[] getArgumentsFromArray(String[] args) {
         ArrayList<String> resultList = new ArrayList<String>();
         // join arguments into 1 string
         StringBuilder sb = new StringBuilder();

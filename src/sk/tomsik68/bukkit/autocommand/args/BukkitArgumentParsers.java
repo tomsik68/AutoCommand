@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class BukkitArgumentParsers {
-    static {
+    public static void registerBukkitParsers() {
         ArgumentParsers.registerArgumentParser(Player.class, new PlayerParser());
         ArgumentParsers.registerArgumentParser(OfflinePlayer.class, new OfflinePlayerParser());
         ArgumentParsers.registerArgumentParser(World.class, new WorldParser());

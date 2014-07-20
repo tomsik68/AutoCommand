@@ -6,4 +6,6 @@ public interface IErrorMessageProvider {
     public String noPermission();
 
     public String unknownCommand();
+
+    public String unknownError();
 }

@@ -69,6 +69,9 @@ public class ArgumentParsers {
                 tempArg = "";
             } else {
                 tempArg += c;
+                if(c == '\\'){
+                    tempArg += argsString.charAt(++index);
+                }
             }
 
             ++index;

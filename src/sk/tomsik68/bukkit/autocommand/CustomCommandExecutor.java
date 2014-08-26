@@ -1,6 +1,5 @@
 package sk.tomsik68.bukkit.autocommand;
 
-import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 
 import sk.tomsik68.permsguru.EPermissions;
@@ -16,5 +15,5 @@ public interface CustomCommandExecutor {
 
     public boolean isPlayerCommand();
 
-    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws CommandException;
+    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception;
 }

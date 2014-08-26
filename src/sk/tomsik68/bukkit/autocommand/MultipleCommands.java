@@ -1,6 +1,5 @@
 package sk.tomsik68.bukkit.autocommand;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -63,9 +62,9 @@ public class MultipleCommands implements CustomCommandExecutor {
     }
 
     @Override
-    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws CommandException {
+    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception {
         if (args.length == 0) {
-            throw new InvalidArgumentCountException();
+            throw new InvalidArgumentCountException(this);
         }
         String subCommandName = args[0];
         if (!subCommands.containsKey(subCommandName)) {
@@ -76,7 +75,7 @@ public class MultipleCommands implements CustomCommandExecutor {
         String[] args2;
         if (args.length > 1) {
             args2 = new String[args.length - 1];
-            System.arraycopy(args, 0, args2, 1, args.length - 1);
+            System.arraycopy(args, 1, args2, 0, args.length - 1);
         } else
             args2 = args;
         subCommand.runCommand(sender, perms, args2);

@@ -1,11 +1,13 @@
 package sk.tomsik68.bukkit.autocommand;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 
 import sk.tomsik68.bukkit.autocommand.args.ArgumentParsers;
+import sk.tomsik68.bukkit.autocommand.err.InvalidArgumentCountException;
 import sk.tomsik68.bukkit.autocommand.err.NoPermissionException;
 import sk.tomsik68.permsguru.EPermissions;
 
@@ -42,17 +44,17 @@ public class SingleCommand implements CustomCommandExecutor {
     }
 
     @Override
-    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws CommandException {
+    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception {
         if (!perms.has(sender, getPermission()))
             throw new NoPermissionException();
+        Object[] objectArgs = ArgumentParsers.parse(method.getParameterTypes(), args);
+        Object[] finalObjectArgs = new Object[objectArgs.length + 1];
+        System.arraycopy(objectArgs, 0, finalObjectArgs, 1, objectArgs.length);
+        finalObjectArgs[0] = sender;
         try {
-            Object[] objectArgs = ArgumentParsers.parse(method.getParameterTypes(), args);
-            Object[] finalObjectArgs = new Object[objectArgs.length + 1];
-            System.arraycopy(objectArgs, 0, finalObjectArgs, 1, objectArgs.length);
-            finalObjectArgs[0] = sender;
             method.invoke(obj, finalObjectArgs);
-        } catch (Exception e) {
-            throw new CommandException("Method failed to invoke :(", e);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidArgumentCountException(this);
         }
     }
 

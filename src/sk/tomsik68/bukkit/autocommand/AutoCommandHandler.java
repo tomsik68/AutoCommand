@@ -3,10 +3,10 @@ package sk.tomsik68.bukkit.autocommand;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import sk.tomsik68.bukkit.autocommand.err.CommandExecutionException;
 import sk.tomsik68.bukkit.autocommand.err.DefaultErrorMessageProvider;
 import sk.tomsik68.bukkit.autocommand.err.IErrorMessageProvider;
 import sk.tomsik68.bukkit.autocommand.err.InvalidArgumentCountException;
@@ -33,8 +33,8 @@ public class AutoCommandHandler implements CommandExecutor {
             if (!perms.has(sender, exec.getPermission()))
                 throw new NoPermissionException();
             exec.runCommand(sender, perms, args);
-        } catch (InvalidArgumentCountException iace) {
-            sender.sendMessage(ChatColor.RED + errorMessages.invalidArgumentCount());
+        } catch (CommandExecutionException iace) {
+            sender.sendMessage(ChatColor.RED + "Correct usage: " + iace.getCorrectUsage());
         } catch (NoSuchCommandException nsce) {
             sender.sendMessage(ChatColor.RED + errorMessages.unknownCommand());
         } catch (NoPermissionException npmsne) {

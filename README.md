@@ -34,3 +34,7 @@ Example commands class:
 + Very simple API for parameters - standard types are converted automatically, converters for other types can be supplied
 + No workarounds around Bukkit API - uses standard CommandExecutor model without CommandMap hooking
 + Full support for sub-commands
+
+## TODO:
+ 
++ Improve error messages(make them more specific)

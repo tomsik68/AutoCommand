@@ -1,4 +1,4 @@
-package sk.tomsik68.bukkit.autocommand.args;
+package sk.tomsik68.autocommand.args;
 
 import java.util.ArrayList;
 import java.util.HashMap;

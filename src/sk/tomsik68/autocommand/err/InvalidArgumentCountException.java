@@ -1,6 +1,6 @@
-package sk.tomsik68.bukkit.autocommand.err;
+package sk.tomsik68.autocommand.err;
 
-import sk.tomsik68.bukkit.autocommand.CustomCommandExecutor;
+import sk.tomsik68.autocommand.CustomCommandExecutor;
 
 public class InvalidArgumentCountException extends CommandExecutionException {
 

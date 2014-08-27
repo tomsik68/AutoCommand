@@ -1,4 +1,4 @@
-package sk.tomsik68.bukkit.autocommand.args;
+package sk.tomsik68.autocommand.args;
 
 public class EnumParser<E extends Enum> implements ArgumentParser {
     private final Class<E> enumClass;
@@ -7,9 +7,13 @@ public class EnumParser<E extends Enum> implements ArgumentParser {
         this.enumClass = enumClass;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object parse(String str) throws ArgumentParserException {
-        return Enum.valueOf(enumClass, str);
+        Enum result = Enum.valueOf(enumClass, str);
+        if (result == null)
+            throw new ArgumentParserException("Invalid argument: " + str);
+        return result;
     }
 
 }

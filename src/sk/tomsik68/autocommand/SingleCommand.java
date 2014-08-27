@@ -1,14 +1,12 @@
-package sk.tomsik68.bukkit.autocommand;
+package sk.tomsik68.autocommand;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 
-import sk.tomsik68.bukkit.autocommand.args.ArgumentParsers;
-import sk.tomsik68.bukkit.autocommand.err.InvalidArgumentCountException;
-import sk.tomsik68.bukkit.autocommand.err.NoPermissionException;
+import sk.tomsik68.autocommand.args.ArgumentParsers;
+import sk.tomsik68.autocommand.err.InvalidArgumentCountException;
+import sk.tomsik68.autocommand.err.NoPermissionException;
 import sk.tomsik68.permsguru.EPermissions;
 
 public class SingleCommand implements CustomCommandExecutor {
@@ -51,6 +49,7 @@ public class SingleCommand implements CustomCommandExecutor {
         Object[] finalObjectArgs = new Object[objectArgs.length + 1];
         System.arraycopy(objectArgs, 0, finalObjectArgs, 1, objectArgs.length);
         finalObjectArgs[0] = sender;
+        
         try {
             method.invoke(obj, finalObjectArgs);
         } catch (IllegalArgumentException e) {

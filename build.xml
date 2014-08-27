@@ -1,0 +1,65 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="AutoCommand" default="local_install">
+
+	<!-- Global variables -->
+	<property name="build" location="build" />
+	<property name="sources.dir" location="src" />
+	<property name="lib" location="lib" />
+	<property name="version" value="0.1" />
+	<property name="jarname" value="autocommand-${version}.jar" />
+
+	<!-- These JARs will be compiled against. Here, you can put bukkit, other plugin JARs which user should install etc. -->
+	<path id="compile_against.jars">
+		<fileset dir="lib">
+			<include name="*bukkit*.jar" />
+			<include name="junit*.jar" />
+			<include name="permsguru*.jar" />
+		</fileset>
+	</path>
+
+	<!-- These JARs will be compiled into your output JAR. You can use this for libraries which you have in separate projects etc. 
+	If you put someone else's library here, you must make sure the license allows it.
+	-->
+	<zipfileset id="compile_into.jars" dir="${lib}">
+		<exclude name="*" />
+	</zipfileset>
+
+	<!-- Additional non-class files you want to include in your JAR file(plugin.yml, default config etc.) -->
+	<zipfileset id="jar_include" dir="${lib}">
+		<exclude name="*" />
+	</zipfileset>
+
+	<!-- You shouldn't need to modify the file below this line, everything is in variables... -->
+	<target name="clean">
+		<delete dir="${build}" />
+		<mkdir dir="${build}/classes" />
+	</target>
+
+
+	<!-- All JARs that need to be compiled into the project will be re-packaged -->
+	<target name="extractJars">
+		<unzip dest="${build}/classes">
+			<fileset refid="compile_into.jars" />
+		</unzip>
+	</target>
+
+	<target name="compile" depends="clean,resolve,extractJars" description="--> compile the project">
+		<javac srcdir="${sources.dir}" destdir="${build}/classes" classpathref="compile_against.jars" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${build}/jar" />
+		<jar destfile="${build}/jar/${jarname}" basedir="${build}/classes">
+			<zipfileset refid="jar_include" />
+		</jar>
+	</target>
+
+	<target name="local_install" depends="jar">
+		<ivy:publish pubrevision="${version}" status="integration" resolver="local" overwrite="true">
+			<artifacts pattern="${build}/jar/[artifact]-[revision].jar" />
+		</ivy:publish>
+	</target>
+
+	<target name="resolve" description="--> retrieve dependencies with ivy">
+		<ivy:retrieve sync="true" resolveid="chainWithBukkit" />
+	</target>
+</project>

@@ -1,4 +1,4 @@
-package sk.tomsik68.bukkit.autocommand.err;
+package sk.tomsik68.autocommand.err;
 
 public class DefaultErrorMessageProvider implements IErrorMessageProvider {
 

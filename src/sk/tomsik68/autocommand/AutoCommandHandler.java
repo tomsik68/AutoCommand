@@ -1,4 +1,4 @@
-package sk.tomsik68.bukkit.autocommand;
+package sk.tomsik68.autocommand;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -6,12 +6,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import sk.tomsik68.bukkit.autocommand.err.CommandExecutionException;
-import sk.tomsik68.bukkit.autocommand.err.DefaultErrorMessageProvider;
-import sk.tomsik68.bukkit.autocommand.err.IErrorMessageProvider;
-import sk.tomsik68.bukkit.autocommand.err.InvalidArgumentCountException;
-import sk.tomsik68.bukkit.autocommand.err.NoPermissionException;
-import sk.tomsik68.bukkit.autocommand.err.NoSuchCommandException;
+import sk.tomsik68.autocommand.err.CommandExecutionException;
+import sk.tomsik68.autocommand.err.DefaultErrorMessageProvider;
+import sk.tomsik68.autocommand.err.IErrorMessageProvider;
+import sk.tomsik68.autocommand.err.NoPermissionException;
+import sk.tomsik68.autocommand.err.NoSuchCommandException;
 import sk.tomsik68.permsguru.EPermissions;
 
 public class AutoCommandHandler implements CommandExecutor {

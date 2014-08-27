@@ -1,8 +1,9 @@
-package sk.tomsik68.bukkit.autocommand.args;
+package sk.tomsik68.autocommand.args;
 
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -14,6 +15,7 @@ public class BukkitArgumentParsers {
         ArgumentParsers.registerArgumentParser(OfflinePlayer.class, new OfflinePlayerParser());
         ArgumentParsers.registerArgumentParser(World.class, new WorldParser());
         ArgumentParsers.registerArgumentParser(Plugin.class, new PluginParser());
+        ArgumentParsers.registerArgumentParser(Material.class, new EnumParser<Material>(Material.class));
     }
 
     public static class PlayerParser implements ArgumentParser {
@@ -56,4 +58,5 @@ public class BukkitArgumentParsers {
         }
 
     }
+
 }

@@ -1,4 +1,4 @@
-package sk.tomsik68.bukkit.autocommand.err;
+package sk.tomsik68.autocommand.err;
 
 import org.bukkit.command.CommandException;
 

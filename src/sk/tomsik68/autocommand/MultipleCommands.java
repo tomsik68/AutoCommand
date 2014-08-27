@@ -1,15 +1,14 @@
-package sk.tomsik68.bukkit.autocommand;
+package sk.tomsik68.autocommand;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 
-import sk.tomsik68.bukkit.autocommand.err.CommandRegistrationException;
-import sk.tomsik68.bukkit.autocommand.err.InvalidArgumentCountException;
-import sk.tomsik68.bukkit.autocommand.err.NoSuchCommandException;
+import sk.tomsik68.autocommand.err.CommandRegistrationException;
+import sk.tomsik68.autocommand.err.InvalidArgumentCountException;
+import sk.tomsik68.autocommand.err.NoSuchCommandException;
 import sk.tomsik68.permsguru.EPermissions;
 
 public class MultipleCommands implements CustomCommandExecutor {
@@ -27,6 +26,12 @@ public class MultipleCommands implements CustomCommandExecutor {
         for (Method method : methods) {
             AutoCommand annotation = method.getAnnotation(AutoCommand.class);
             if (annotation != null) {
+                if (method.getParameterTypes().length == 0) {
+                    throw new CommandRegistrationException("The annotated method needs at least one parameter");
+                }
+                if (!method.getParameterTypes()[0].equals(CommandSender.class)) {
+                    throw new CommandRegistrationException("First parameter of your command method must be " + CommandSender.class.getName());
+                }
                 String name = ((AutoCommand) annotation).name();
                 if (name == null || name.length() == 0) {
                     name = method.getName();

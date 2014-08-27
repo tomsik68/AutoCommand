@@ -1,4 +1,4 @@
-package sk.tomsik68.bukkit.autocommand;
+package sk.tomsik68.autocommand;
 
 import org.bukkit.command.CommandSender;
 

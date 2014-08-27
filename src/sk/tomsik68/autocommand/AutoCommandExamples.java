@@ -1,4 +1,4 @@
-package sk.tomsik68.bukkit.autocommand;
+package sk.tomsik68.autocommand;
 
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -20,7 +20,8 @@ public class AutoCommandExamples {
             console = true, 
             player = true, 
             permission = "example.strike", 
-            usage = "<player>")
+            usage = "<player>"
+            )
     public void strike(CommandSender sender, Player otherPlayer) {
 
     }

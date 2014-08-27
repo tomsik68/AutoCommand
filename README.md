@@ -38,3 +38,4 @@ Example commands class:
 ## TODO:
  
 + Improve error messages(make them more specific)
++ Improve sub-commands API

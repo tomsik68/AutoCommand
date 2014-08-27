@@ -1,4 +1,4 @@
-package sk.tomsik68.bukkit.autocommand;
+package sk.tomsik68.autocommand;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

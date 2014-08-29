@@ -10,12 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class BukkitArgumentParsers {
-    public static void registerBukkitParsers() {
-        ArgumentParsers.registerArgumentParser(Player.class, new PlayerParser());
-        ArgumentParsers.registerArgumentParser(OfflinePlayer.class, new OfflinePlayerParser());
-        ArgumentParsers.registerArgumentParser(World.class, new WorldParser());
-        ArgumentParsers.registerArgumentParser(Plugin.class, new PluginParser());
-        ArgumentParsers.registerArgumentParser(Material.class, new EnumParser<Material>(Material.class));
+    public static void registerBukkitParsers(ArgumentParsers parsers) {
+        parsers.registerArgumentParser(Player.class, new PlayerParser());
+        parsers.registerArgumentParser(OfflinePlayer.class, new OfflinePlayerParser());
+        parsers.registerArgumentParser(World.class, new WorldParser());
+        parsers.registerArgumentParser(Plugin.class, new PluginParser());
+        parsers.registerArgumentParser(Material.class, new EnumParser<Material>(Material.class));
     }
 
     public static class PlayerParser implements ArgumentParser {

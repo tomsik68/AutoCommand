@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BasicParsers {
-    public static void registerBasicParsers() {
-        ArgumentParsers.registerArgumentParser(Integer.TYPE, new IntParser());
-        ArgumentParsers.registerArgumentParser(Integer.class, new IntParser());
-        ArgumentParsers.registerArgumentParser(Double.TYPE, new DoubleParser());
-        ArgumentParsers.registerArgumentParser(Double.class, new DoubleParser());
-        ArgumentParsers.registerArgumentParser(String.class, new StringParser());
+    public static void registerBasicParsers(ArgumentParsers parsers) {
+        parsers.registerArgumentParser(Integer.TYPE, new IntParser());
+        parsers.registerArgumentParser(Integer.class, new IntParser());
+        parsers.registerArgumentParser(Double.TYPE, new DoubleParser());
+        parsers.registerArgumentParser(Double.class, new DoubleParser());
+        parsers.registerArgumentParser(String.class, new StringParser());
     }
 
     public static class StringParser implements ArgumentParser {

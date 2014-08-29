@@ -11,6 +11,7 @@ public class ArgumentParsers {
 
     public ArgumentParsers(ArgumentTokenizer tok) {
         tokenizer = tok;
+        BasicParsers.registerBasicParsers(this);
     }
 
     public void registerArgumentParser(Class<?> clazz, ArgumentParser parser) {

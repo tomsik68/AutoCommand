@@ -27,7 +27,6 @@ public class AutoCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        System.out.println("Arguments for root handler:" + args.length);
         try {
             if (!perms.has(sender, exec.getPermission()))
                 throw new NoPermissionException();

@@ -30,7 +30,7 @@ public class AutoCommandContext {
         argumentParsers = new ArgumentParsers(tokenizer);
         errorMessageProvider = provider;
         this.perms = permissionSystem;
-        commandRegistration = new CommandRegistrationManager(perms, errorMessageProvider);
+        commandRegistration = new CommandRegistrationManager(this);
     }
 
     public Plugin getOwner() {
@@ -51,5 +51,9 @@ public class AutoCommandContext {
         PluginCommand pluginCommand = ownerPlugin.getServer().getPluginCommand(commandName);
         Validate.notNull(pluginCommand, "You have to register your command in plugin.yml");
         commandRegistration.register(pluginCommand, obj);
+    }
+
+    public EPermissions getPermissions() {
+        return perms;
     }
 }

@@ -7,19 +7,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 
 import sk.tomsik68.autocommand.err.CommandRegistrationException;
-import sk.tomsik68.autocommand.err.ErrorMessageProvider;
-import sk.tomsik68.permsguru.EPermissions;
 
-public class CommandRegistrationManager {
-    private final EPermissions perms;
-    private final ErrorMessageProvider errorMessageProvider;
+class CommandRegistrationManager {
+    private final AutoCommandContext context;
 
-    public CommandRegistrationManager(EPermissions perms, ErrorMessageProvider errMessageProvider) {
-        this.perms = perms;
-        errorMessageProvider = errMessageProvider;
+    CommandRegistrationManager(AutoCommandContext context) {
+        this.context = context;
     }
 
-    public void register(PluginCommand cmd, Object obj) {
+    void register(PluginCommand cmd, Object obj) {
         int commandMethods = 0;
         Method[] methods = obj.getClass().getDeclaredMethods();
         for (Method method : methods) {
@@ -35,12 +31,12 @@ public class CommandRegistrationManager {
             for (Method method : methods) {
                 AutoCommand annotation = method.getAnnotation(AutoCommand.class);
                 if (annotation != null) {
-                    exec = new SingleCommand(method, obj, annotation);
+                    exec = new SingleCommand(context, method, obj, annotation);
                 }
             }
-            handler = new AutoCommandExecutor(exec, perms, errorMessageProvider);
+            handler = new AutoCommandExecutor(exec, context.getPermissions(), context.getErrorMessageProvider());
         } else {
-            MultipleCommands exec = new MultipleCommands(cmd.getDescription());
+            MultipleCommands exec = new MultipleCommands(context, cmd.getDescription());
             Validate.notNull(obj);
             for (Method method : methods) {
                 AutoCommand annotation = method.getAnnotation(AutoCommand.class);
@@ -55,10 +51,10 @@ public class CommandRegistrationManager {
                     if (name == null || name.length() == 0) {
                         name = method.getName();
                     }
-                    exec.registerCommand(name, new SingleCommand(method, obj, annotation));
+                    exec.registerCommand(name, new SingleCommand(context, method, obj, annotation));
                 }
             }
-            handler = new AutoCommandExecutor(exec, perms, errorMessageProvider);
+            handler = new AutoCommandExecutor(exec, context.getPermissions(), context.getErrorMessageProvider());
         }
         Validate.notNull(handler);
         cmd.setExecutor(handler);

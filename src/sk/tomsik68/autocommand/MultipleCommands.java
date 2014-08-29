@@ -1,47 +1,29 @@
 package sk.tomsik68.autocommand;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.util.ChatPaginator;
+import org.bukkit.util.ChatPaginator.ChatPage;
 
 import sk.tomsik68.autocommand.err.CommandRegistrationException;
 import sk.tomsik68.autocommand.err.InvalidArgumentCountException;
 import sk.tomsik68.autocommand.err.NoSuchCommandException;
 import sk.tomsik68.permsguru.EPermissions;
 
-public class MultipleCommands implements CustomCommandExecutor {
+class MultipleCommands extends CustomCommandExecutor {
     private final HashMap<String, CustomCommandExecutor> subCommands = new HashMap<String, CustomCommandExecutor>();
     private final String help;
 
-    public MultipleCommands(String help) {
+    MultipleCommands(AutoCommandContext ctx, String help) {
+        super(ctx);
         this.help = help;
     }
 
-    public void registerCommands(Object obj) throws CommandRegistrationException {
-        Validate.notNull(obj);
-        Class<?> clazz = obj.getClass();
-        Method[] methods = clazz.getDeclaredMethods();
-        for (Method method : methods) {
-            AutoCommand annotation = method.getAnnotation(AutoCommand.class);
-            if (annotation != null) {
-                if (method.getParameterTypes().length == 0) {
-                    throw new CommandRegistrationException("The annotated method needs at least one parameter");
-                }
-                if (!method.getParameterTypes()[0].equals(CommandSender.class)) {
-                    throw new CommandRegistrationException("First parameter of your command method must be " + CommandSender.class.getName());
-                }
-                String name = ((AutoCommand) annotation).name();
-                if (name == null || name.length() == 0) {
-                    name = method.getName();
-                }
-                registerCommand(name, new SingleCommand(method, obj));
-            }
-        }
-    }
-
-    public void registerCommand(String name, CustomCommandExecutor cmd) throws CommandRegistrationException {
+    void registerCommand(String name, CustomCommandExecutor cmd) throws CommandRegistrationException {
         Validate.notNull(name, "Name must be specified!");
         if (name.length() == 0)
             throw new IllegalArgumentException("Name must be specified!");
@@ -58,7 +40,7 @@ public class MultipleCommands implements CustomCommandExecutor {
 
     @Override
     public String getUsage() {
-        return null;
+        return "<sub-command> <parameters...>";
     }
 
     @Override
@@ -69,10 +51,21 @@ public class MultipleCommands implements CustomCommandExecutor {
     @Override
     public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception {
         if (args.length == 0) {
+            sendHelp(sender, 1);
             throw new InvalidArgumentCountException(this);
         }
         String subCommandName = args[0];
+        if (subCommandName.equalsIgnoreCase("?") || subCommandName.equalsIgnoreCase("help")) {
+            int page = 1;
+            if (args.length >= 2) {
+                if (isInt(args[1]))
+                    page = Integer.parseInt(args[1]);
+            }
+            sendHelp(sender, page);
+            return;
+        }
         if (!subCommands.containsKey(subCommandName)) {
+            sendHelp(sender, 1);
             throw new NoSuchCommandException();
         }
         CustomCommandExecutor subCommand = subCommands.get(subCommandName);
@@ -84,6 +77,25 @@ public class MultipleCommands implements CustomCommandExecutor {
         } else
             args2 = args;
         subCommand.runCommand(sender, perms, args2);
+    }
+
+    private boolean isInt(String string) {
+        try {
+            Integer.parseInt(string);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void sendHelp(CommandSender sender, int pageNumber) {
+        StringBuilder helpString = new StringBuilder();
+        for (Entry<String, CustomCommandExecutor> entry : subCommands.entrySet())
+            helpString = helpString.append(ChatColor.AQUA).append(entry.getKey()).append(' ').append(ChatColor.LIGHT_PURPLE).append(entry.getValue().getUsage()).append(' ').append(ChatColor.WHITE).append(" - ").append(ChatColor.GOLD).append(entry.getValue().getHelp()).append('\n');
+        ChatPage page = ChatPaginator.paginate(helpString.toString(), pageNumber);
+        sender.sendMessage(ChatColor.DARK_PURPLE+"===========Help page " + pageNumber + "/" + page.getTotalPages()+"==========");
+        sender.sendMessage(page.getLines());
+
     }
 
     @Override

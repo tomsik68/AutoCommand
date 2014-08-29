@@ -23,7 +23,7 @@
         organisation="sk.tomsik68"
         module="autocommand"
         status="integration"
-        revision="0.1">
+        >
 	</info>
 	
 	<publications>
@@ -32,7 +32,7 @@
 	
 	<dependencies>
 		<dependency org="org.bukkit" name="bukkit" rev="1.7.9-R0.2" />
-		<dependency org="sk.tomsik68" name="permsguru" rev="0.1" />
+		<dependency org="sk.tomsik68" name="permsguru" rev="latest.integration" />
 		<dependency org="junit" name="junit" rev="4.11"/>
 	</dependencies>
 	

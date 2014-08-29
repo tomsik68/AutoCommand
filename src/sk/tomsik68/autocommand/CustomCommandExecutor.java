@@ -1,19 +1,27 @@
 package sk.tomsik68.autocommand;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.CommandSender;
 
 import sk.tomsik68.permsguru.EPermissions;
 
-public interface CustomCommandExecutor {
-    public String getHelp();
+public abstract class CustomCommandExecutor {
+    protected final AutoCommandContext context;
 
-    public String getUsage();
+    public CustomCommandExecutor(AutoCommandContext ctx) {
+        Validate.notNull(ctx);
+        context = ctx;
+    }
 
-    public String getPermission();
+    public abstract String getHelp();
 
-    public boolean isConsoleCommand();
+    public abstract String getUsage();
 
-    public boolean isPlayerCommand();
+    public abstract String getPermission();
 
-    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception;
+    public abstract boolean isConsoleCommand();
+
+    public abstract boolean isPlayerCommand();
+
+    public abstract void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception;
 }

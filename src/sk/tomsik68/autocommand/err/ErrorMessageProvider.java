@@ -1,6 +1,6 @@
 package sk.tomsik68.autocommand.err;
 
-public interface IErrorMessageProvider {
+public interface ErrorMessageProvider {
     public String invalidArgumentCount();
 
     public String noPermission();

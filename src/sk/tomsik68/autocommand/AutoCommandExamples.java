@@ -10,7 +10,8 @@ public class AutoCommandExamples {
             console = true, 
             player = true, 
             permission = "example.give", 
-            usage = "<player> <item> <amount>"
+            usage = "<player> <item> <amount>",
+            help="Gives player an item"
             )
     public void give(CommandSender sender,Player target, Material item, int amount) {
 

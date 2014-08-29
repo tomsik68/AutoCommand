@@ -1,6 +1,6 @@
 package sk.tomsik68.autocommand.err;
 
-public class DefaultErrorMessageProvider implements IErrorMessageProvider {
+public class DefaultErrorMessageProvider implements ErrorMessageProvider {
 
     @Override
     public String invalidArgumentCount() {

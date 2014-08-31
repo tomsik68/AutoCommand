@@ -3,14 +3,15 @@ package sk.tomsik68.autocommand;
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.CommandSender;
 
+import sk.tomsik68.autocommand.context.CommandExecutionContext;
 import sk.tomsik68.permsguru.EPermissions;
 
 abstract class CustomCommandExecutor {
-    protected final AutoCommandContext context;
+    protected final AutoCommandInstance instance;
 
-    public CustomCommandExecutor(AutoCommandContext ctx) {
-        Validate.notNull(ctx);
-        context = ctx;
+    public CustomCommandExecutor(AutoCommandInstance instance) {
+        Validate.notNull(instance);
+        this.instance = instance;
     }
 
     public abstract String getHelp();
@@ -19,5 +20,5 @@ abstract class CustomCommandExecutor {
 
     public abstract String getPermission();
 
-    public abstract void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception;
+    public abstract void runCommand(CommandExecutionContext context, EPermissions perms, String[] args) throws Exception;
 }

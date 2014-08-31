@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.util.ChatPaginator;
 import org.bukkit.util.ChatPaginator.ChatPage;
 
+import sk.tomsik68.autocommand.context.CommandExecutionContext;
 import sk.tomsik68.autocommand.err.CommandRegistrationException;
 import sk.tomsik68.autocommand.err.InvalidArgumentCountException;
 import sk.tomsik68.autocommand.err.NoSuchCommandException;
@@ -18,7 +19,7 @@ class MultipleCommands extends CustomCommandExecutor {
     private final HashMap<String, CustomCommandExecutor> subCommands = new HashMap<String, CustomCommandExecutor>();
     private final String help;
 
-    MultipleCommands(AutoCommandContext ctx, String help) {
+    MultipleCommands(AutoCommandInstance ctx, String help) {
         super(ctx);
         this.help = help;
     }
@@ -49,7 +50,8 @@ class MultipleCommands extends CustomCommandExecutor {
     }
 
     @Override
-    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception {
+    public void runCommand(CommandExecutionContext context, EPermissions perms, String[] args) throws Exception {
+        CommandSender sender = context.getSender();
         if (args.length == 0) {
             sendHelp(sender, perms, 1);
             throw new InvalidArgumentCountException(getUsage());
@@ -76,7 +78,7 @@ class MultipleCommands extends CustomCommandExecutor {
             System.arraycopy(args, 1, args2, 0, args.length - 1);
         } else
             args2 = args;
-        subCommand.runCommand(sender, perms, args2);
+        subCommand.runCommand(context, perms, args2);
     }
 
     private boolean isInt(String string) {

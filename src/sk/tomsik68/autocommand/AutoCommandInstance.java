@@ -3,27 +3,26 @@ package sk.tomsik68.autocommand;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 
 import sk.tomsik68.autocommand.args.ArgumentParsers;
 import sk.tomsik68.autocommand.args.ArgumentTokenizer;
+import sk.tomsik68.autocommand.context.CommandExecutionContext;
 import sk.tomsik68.autocommand.context.ContextParameterProvider;
-import sk.tomsik68.autocommand.context.ContextParameterProviderFactory;
 import sk.tomsik68.autocommand.err.DefaultErrorMessageProvider;
 import sk.tomsik68.autocommand.err.ErrorMessageProvider;
 import sk.tomsik68.permsguru.EPermissions;
 
-public class AutoCommandContext {
+public class AutoCommandInstance {
     private final Plugin ownerPlugin;
     private final ArgumentParsers argumentParsers;
     private final ErrorMessageProvider errorMessageProvider;
     private final CommandRegistrationManager commandRegistration;
-    private final ContextParameterProviderFactoryRegistry cppfr = new ContextParameterProviderFactoryRegistry();
+    private final ContextParameterProviderRegistry cppr = new ContextParameterProviderRegistry();
     private final EPermissions perms;
 
-    public AutoCommandContext(Plugin plugin, EPermissions permissionSystem, ArgumentTokenizer tokenizer, ErrorMessageProvider provider) {
+    public AutoCommandInstance(Plugin plugin, EPermissions permissionSystem, ArgumentTokenizer tokenizer, ErrorMessageProvider provider) {
         Validate.notNull(plugin, "You have to specify plugin");
         Validate.notNull(tokenizer, "You have to specify a tokenizer");
         if (permissionSystem == null) {
@@ -63,11 +62,11 @@ public class AutoCommandContext {
         return perms;
     }
 
-    public void registerContextParameterProviderFactory(ContextParameterProviderFactory factory) {
-        cppfr.registerFactory(factory);
+    public void registerContextParameterProvider(ContextParameterProvider provider) {
+        cppr.registerProvider(provider);
     }
 
-    public Collection<ContextParameterProvider> getProviders(CommandSender sender) {
-        return cppfr.createProviders(sender);
+    public Collection<ContextParameterProvider> getProviders(CommandExecutionContext context) {
+        return cppr.getProviders(context);
     }
 }

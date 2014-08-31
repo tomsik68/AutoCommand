@@ -2,8 +2,7 @@ package sk.tomsik68.autocommand;
 
 import java.lang.reflect.Method;
 
-import org.bukkit.command.CommandSender;
-
+import sk.tomsik68.autocommand.context.CommandExecutionContext;
 import sk.tomsik68.autocommand.err.InvalidArgumentCountException;
 import sk.tomsik68.autocommand.err.NoPermissionException;
 import sk.tomsik68.permsguru.EPermissions;
@@ -13,7 +12,7 @@ class SingleCommand extends CustomCommandExecutor {
     private final String help, usage, permission;
     private final Object obj;
 
-    SingleCommand(AutoCommandContext context,Method method, Object obj, AutoCommand annotation) {
+    SingleCommand(AutoCommandInstance context,Method method, Object obj, AutoCommand annotation) {
         super(context);
         this.method = method;
         help = annotation.help();
@@ -38,14 +37,14 @@ class SingleCommand extends CustomCommandExecutor {
     }
 
     @Override
-    public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception {
-        if (!perms.has(sender, getPermission()))
+    public void runCommand(CommandExecutionContext context, EPermissions perms, String[] args) throws Exception {
+        if (!perms.has(context.getSender(), getPermission()))
             throw new NoPermissionException();
         String argumentsInOneString = joinArgumentsIntoString(args);
-        Object[] objectArgs = context.getArgumentParsers().parse(method.getParameterTypes(), method.getParameterAnnotations(), context.getProviders(sender), argumentsInOneString);
+        Object[] objectArgs = instance.getArgumentParsers().parse(method.getParameterTypes(), method.getParameterAnnotations(), instance.getProviders(context), argumentsInOneString);
         Object[] finalObjectArgs = new Object[objectArgs.length + 1];
         System.arraycopy(objectArgs, 0, finalObjectArgs, 1, objectArgs.length);
-        finalObjectArgs[0] = sender;
+        finalObjectArgs[0] = context;
         
         try {
             method.invoke(obj, finalObjectArgs);

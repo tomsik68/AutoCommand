@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import sk.tomsik68.autocommand.args.ArgumentParserException;
+import sk.tomsik68.autocommand.context.CommandExecutionContext;
+import sk.tomsik68.autocommand.context.CommandExecutionContextFactory;
 import sk.tomsik68.autocommand.err.CommandExecutionException;
 import sk.tomsik68.autocommand.err.ErrorMessageProvider;
 import sk.tomsik68.autocommand.err.NoPermissionException;
@@ -17,6 +19,7 @@ class AutoCommandExecutorWrapper implements CommandExecutor {
     private final CustomCommandExecutor exec;
     private final EPermissions perms;
     private ErrorMessageProvider errorMessages;
+    private CommandExecutionContextFactory contextFactory;
 
     AutoCommandExecutorWrapper(CustomCommandExecutor executor, EPermissions p, ErrorMessageProvider errMessageProvider) {
         Validate.notNull(p);
@@ -24,16 +27,16 @@ class AutoCommandExecutorWrapper implements CommandExecutor {
         this.perms = p;
         this.exec = executor;
         errorMessages = errMessageProvider;
+        contextFactory = new CommandExecutionContextFactory();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         try {
-            if (!perms.has(sender, exec.getPermission()))
-                throw new NoPermissionException();
-            exec.runCommand(sender, perms, args);
-        }catch (ArgumentParserException ape){
-            sender.sendMessage(ChatColor.RED+ape.getMessage());
+            CommandExecutionContext context = contextFactory.createContext(sender);
+            exec.runCommand(context, perms, args);
+        } catch (ArgumentParserException ape) {
+            sender.sendMessage(ChatColor.RED + ape.getMessage());
         } catch (CommandExecutionException iace) {
             if (iace.getCorrectUsage() != null && !iace.getCorrectUsage().isEmpty())
                 sender.sendMessage(ChatColor.RED + "Correct usage: " + iace.getCorrectUsage());

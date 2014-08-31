@@ -1,6 +1,7 @@
 package sk.tomsik68.autocommand.args;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import org.apache.commons.lang.Validate;
 
 import sk.tomsik68.autocommand.ContextArg;
+import sk.tomsik68.autocommand.context.CommandExecutionContext;
 import sk.tomsik68.autocommand.context.ContextParameterProvider;
 
 public class ArgumentParsers {
@@ -26,28 +28,35 @@ public class ArgumentParsers {
         availableParsers.put(clazz, parser);
     }
 
-    public Object[] parse(Class<?>[] classes, Annotation[][] annotations, Collection<ContextParameterProvider> contextParameterProviders,
+    public Object[] parse(CommandExecutionContext context, Method method, Collection<ContextParameterProvider> contextParameterProviders,
             String commandArguments) throws ArgumentParserException {
+        Class<?>[] classes = method.getParameterTypes();
+        Annotation[][] annotations = method.getParameterAnnotations();
         ArrayList<Object> resultList = new ArrayList<Object>();
         // 1) split up args also based on quotes
         String[] tokenizedArguments = tokenizer.tokenize(commandArguments);
         // 2) each class needs to be parsed from args list
-        for (int i = 0; i < tokenizedArguments.length && i < classes.length - 1; i++) {
-            String arg = tokenizedArguments[i];
+        for (int argumentNumber = 0, methodParamNumber = 1; methodParamNumber < classes.length; argumentNumber++, methodParamNumber = Math.max(1, methodParamNumber + 1)) {
+            String arg;
+             try{
+                 arg = tokenizedArguments[argumentNumber];
+             }catch(ArrayIndexOutOfBoundsException e123){
+                 arg = "";
+             }
             // classes[0] is always command sender
-            Class<?> clz = classes[i + 1];
+            Class<?> clz = classes[methodParamNumber];
             try {
                 Object obj = parse(arg, clz);
                 resultList.add(obj);
             } catch (ArgumentParserException ape) {
-                if (contextParameterProviders != null && !contextParameterProviders.isEmpty() && annotations[i + 1].length > 0
-                        && annotations[i + 1][0] instanceof ContextArg) {
-                    String[] providerArgs = ((ContextArg) annotations[i + 1][0]).value();
+                if (contextParameterProviders != null && !contextParameterProviders.isEmpty() && annotations[methodParamNumber].length > 0
+                        && annotations[methodParamNumber][0] instanceof ContextArg) {
+                    String[] providerArgs = ((ContextArg) annotations[methodParamNumber][0]).value();
                     for (ContextParameterProvider paramProvider : contextParameterProviders) {
-                        if (paramProvider.provides(clz, providerArgs)){
-                            resultList.add(paramProvider.provide(clz, providerArgs));
-                            // parse this parameter from command with different parser
-                            --i;
+                        if (paramProvider.provides(context, clz, providerArgs)) {
+                            resultList.add(paramProvider.provide(context, clz, providerArgs));
+                            // parse this argument again...
+                            --argumentNumber;
                             break;
                         }
                     }

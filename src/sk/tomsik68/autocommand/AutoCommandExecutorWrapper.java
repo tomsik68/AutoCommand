@@ -34,7 +34,8 @@ class AutoCommandExecutorWrapper implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         try {
             CommandExecutionContext context = contextFactory.createContext(sender);
-            exec.runCommand(context, perms, args);
+            String argumentsInOneString = joinArgumentsIntoString(args);
+            exec.runCommand(context, perms, argumentsInOneString);
         } catch (ArgumentParserException ape) {
             sender.sendMessage(ChatColor.RED + ape.getMessage());
         } catch (CommandExecutionException iace) {
@@ -50,6 +51,14 @@ class AutoCommandExecutorWrapper implements CommandExecutor {
         }
 
         return true;
+    }
+
+    public static final String joinArgumentsIntoString(String[] args) {
+        StringBuilder builder = new StringBuilder();
+        for (String arg : args) {
+            builder = builder.append(arg).append(' ');
+        }
+        return builder.toString();
     }
 
 }

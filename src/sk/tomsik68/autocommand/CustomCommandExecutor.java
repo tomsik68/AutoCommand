@@ -20,5 +20,5 @@ abstract class CustomCommandExecutor {
 
     public abstract String getPermission();
 
-    public abstract void runCommand(CommandExecutionContext context, EPermissions perms, String[] args) throws Exception;
+    public abstract void runCommand(CommandExecutionContext context, EPermissions perms, String argsInOneString) throws Exception;
 }

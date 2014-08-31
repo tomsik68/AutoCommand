@@ -3,8 +3,6 @@ package sk.tomsik68.autocommand;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.bukkit.command.CommandSender;
-
 import sk.tomsik68.autocommand.context.CommandExecutionContext;
 import sk.tomsik68.autocommand.context.ContextParameterProvider;
 

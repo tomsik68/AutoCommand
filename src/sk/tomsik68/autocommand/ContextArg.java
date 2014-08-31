@@ -8,5 +8,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ContextArg {
+    /**
+     * 
+     * @return Parameters for ContextParameterProvider
+     */
     String[] value() default {};
 }

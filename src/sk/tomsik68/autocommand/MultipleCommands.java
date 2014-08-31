@@ -50,18 +50,19 @@ class MultipleCommands extends CustomCommandExecutor {
     }
 
     @Override
-    public void runCommand(CommandExecutionContext context, EPermissions perms, String[] args) throws Exception {
+    public void runCommand(CommandExecutionContext context, EPermissions perms, String argsInString) throws Exception {
         CommandSender sender = context.getSender();
-        if (args.length == 0) {
+        String[] poorlySplitArgs = argsInString.split(" ");
+        if (poorlySplitArgs.length == 0) {
             sendHelp(sender, perms, 1);
             throw new InvalidArgumentCountException(getUsage());
         }
-        String subCommandName = args[0];
+        String subCommandName = poorlySplitArgs[0];
         if (subCommandName.equalsIgnoreCase("?") || subCommandName.equalsIgnoreCase("help")) {
             int page = 1;
-            if (args.length >= 2) {
-                if (isInt(args[1]))
-                    page = Integer.parseInt(args[1]);
+            if (poorlySplitArgs.length >= 2) {
+                if (isInt(poorlySplitArgs[1]))
+                    page = Integer.parseInt(poorlySplitArgs[1]);
             }
             sendHelp(sender, perms, page);
             return;
@@ -72,12 +73,13 @@ class MultipleCommands extends CustomCommandExecutor {
         }
         CustomCommandExecutor subCommand = subCommands.get(subCommandName);
 
-        String[] args2;
-        if (args.length > 1) {
-            args2 = new String[args.length - 1];
-            System.arraycopy(args, 1, args2, 0, args.length - 1);
+        String[] argsArray2;
+        if (poorlySplitArgs.length > 1) {
+            argsArray2 = new String[poorlySplitArgs.length - 1];
+            System.arraycopy(poorlySplitArgs, 1, argsArray2, 0, poorlySplitArgs.length - 1);
         } else
-            args2 = args;
+            argsArray2 = poorlySplitArgs;
+        String args2 = AutoCommandExecutorWrapper.joinArgumentsIntoString(argsArray2);
         subCommand.runCommand(context, perms, args2);
     }
 

@@ -19,7 +19,7 @@ public class AutoCommandInstance {
     private final ArgumentParsers argumentParsers;
     private final ErrorMessageProvider errorMessageProvider;
     private final CommandRegistrationManager commandRegistration;
-    private final ContextParameterProviderRegistry cppr = new ContextParameterProviderRegistry();
+    private final ContextParameterProviderRegistry cppr;
     private final EPermissions perms;
 
     public AutoCommandInstance(Plugin plugin, EPermissions permissionSystem, ArgumentTokenizer tokenizer, ErrorMessageProvider provider) {
@@ -36,6 +36,7 @@ public class AutoCommandInstance {
         errorMessageProvider = provider;
         this.perms = permissionSystem;
         commandRegistration = new CommandRegistrationManager(this);
+        cppr = new ContextParameterProviderRegistry();
     }
 
     public Plugin getOwner() {

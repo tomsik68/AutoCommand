@@ -24,6 +24,8 @@ public class BukkitArgumentParsers {
             Player player = Bukkit.getPlayerExact(str);
             if (player == null)
                 player = Bukkit.getPlayer(str);
+            if(player == null)
+                throw new ArgumentParserException("Player '"+str+"' doesn't exist!");
             return player;
         }
     }
@@ -32,6 +34,9 @@ public class BukkitArgumentParsers {
         @Override
         public Object parse(String str) throws ArgumentParserException {
             OfflinePlayer player = Bukkit.getOfflinePlayer(str);
+            if (player == null) {
+                throw new ArgumentParserException("Player '"+str+"' doesn't exist!");
+            }
             return player;
         }
     }
@@ -39,7 +44,11 @@ public class BukkitArgumentParsers {
     public static class PluginParser implements ArgumentParser {
         @Override
         public Object parse(String str) throws ArgumentParserException {
-            return Bukkit.getPluginManager().getPlugin(str);
+            Plugin pl = Bukkit.getPluginManager().getPlugin(str);
+            if(pl == null){
+                throw new ArgumentParserException("Plugin '"+str+"' doesn't exist!");
+            }
+            return pl;
         }
     }
 
@@ -54,6 +63,8 @@ public class BukkitArgumentParsers {
                 } catch (Exception e) {
                 }
             }
+            if (world == null)
+                throw new ArgumentParserException("World '" + str + "' doesn't exist!");
             return world;
         }
 

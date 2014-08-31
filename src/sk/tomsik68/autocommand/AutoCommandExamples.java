@@ -4,22 +4,18 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class AutoCommandExamples {
+class AutoCommandExamples {
 
     @AutoCommand(
-            console = true, 
-            player = true, 
             permission = "example.give", 
             usage = "<player> <item> <amount>",
             help="Gives player an item"
             )
-    public void give(CommandSender sender,Player target, Material item, int amount) {
+    public void give(CommandSender sender,@ContextArg Player target, Material item, int amount) {
 
     }
 
     @AutoCommand(
-            console = true, 
-            player = true, 
             permission = "example.strike", 
             usage = "<player>"
             )

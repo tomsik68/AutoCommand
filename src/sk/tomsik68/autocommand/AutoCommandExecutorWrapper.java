@@ -6,18 +6,19 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import sk.tomsik68.autocommand.args.ArgumentParserException;
 import sk.tomsik68.autocommand.err.CommandExecutionException;
 import sk.tomsik68.autocommand.err.ErrorMessageProvider;
 import sk.tomsik68.autocommand.err.NoPermissionException;
 import sk.tomsik68.autocommand.err.NoSuchCommandException;
 import sk.tomsik68.permsguru.EPermissions;
 
-public class AutoCommandExecutor implements CommandExecutor {
+class AutoCommandExecutorWrapper implements CommandExecutor {
     private final CustomCommandExecutor exec;
     private final EPermissions perms;
     private ErrorMessageProvider errorMessages;
 
-    AutoCommandExecutor(CustomCommandExecutor executor, EPermissions p, ErrorMessageProvider errMessageProvider) {
+    AutoCommandExecutorWrapper(CustomCommandExecutor executor, EPermissions p, ErrorMessageProvider errMessageProvider) {
         Validate.notNull(p);
         Validate.notNull(executor);
         this.perms = p;
@@ -31,6 +32,8 @@ public class AutoCommandExecutor implements CommandExecutor {
             if (!perms.has(sender, exec.getPermission()))
                 throw new NoPermissionException();
             exec.runCommand(sender, perms, args);
+        }catch (ArgumentParserException ape){
+            sender.sendMessage(ChatColor.RED+ape.getMessage());
         } catch (CommandExecutionException iace) {
             if (iace.getCorrectUsage() != null && !iace.getCorrectUsage().isEmpty())
                 sender.sendMessage(ChatColor.RED + "Correct usage: " + iace.getCorrectUsage());

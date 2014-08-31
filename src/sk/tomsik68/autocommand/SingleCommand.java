@@ -11,7 +11,6 @@ import sk.tomsik68.permsguru.EPermissions;
 class SingleCommand extends CustomCommandExecutor {
     private final Method method;
     private final String help, usage, permission;
-    private final boolean console, player;
     private final Object obj;
 
     SingleCommand(AutoCommandContext context,Method method, Object obj, AutoCommand annotation) {
@@ -20,8 +19,6 @@ class SingleCommand extends CustomCommandExecutor {
         help = annotation.help();
         usage = annotation.usage();
         permission = annotation.permission();
-        console = annotation.console();
-        player = annotation.player();
         this.obj = obj;
     }
 
@@ -44,7 +41,8 @@ class SingleCommand extends CustomCommandExecutor {
     public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception {
         if (!perms.has(sender, getPermission()))
             throw new NoPermissionException();
-        Object[] objectArgs = context.getArgumentParsers().parse(method.getParameterTypes(), args);
+        String argumentsInOneString = joinArgumentsIntoString(args);
+        Object[] objectArgs = context.getArgumentParsers().parse(method.getParameterTypes(), method.getParameterAnnotations(), context.getProviders(sender), argumentsInOneString);
         Object[] finalObjectArgs = new Object[objectArgs.length + 1];
         System.arraycopy(objectArgs, 0, finalObjectArgs, 1, objectArgs.length);
         finalObjectArgs[0] = sender;
@@ -52,18 +50,16 @@ class SingleCommand extends CustomCommandExecutor {
         try {
             method.invoke(obj, finalObjectArgs);
         } catch (IllegalArgumentException e) {
-            throw new InvalidArgumentCountException(this);
+            throw new InvalidArgumentCountException(getUsage());
         }
     }
 
-    @Override
-    public boolean isConsoleCommand() {
-        return console;
-    }
-
-    @Override
-    public boolean isPlayerCommand() {
-        return player;
+    private String joinArgumentsIntoString(String[] args) {
+        StringBuilder builder = new StringBuilder();
+        for(String arg : args){
+            builder = builder.append(arg).append(' ');
+        }
+        return builder.toString();
     }
 
 }

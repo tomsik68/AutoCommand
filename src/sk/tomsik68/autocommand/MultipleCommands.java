@@ -51,8 +51,8 @@ class MultipleCommands extends CustomCommandExecutor {
     @Override
     public void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception {
         if (args.length == 0) {
-            sendHelp(sender, 1);
-            throw new InvalidArgumentCountException(this);
+            sendHelp(sender, perms, 1);
+            throw new InvalidArgumentCountException(getUsage());
         }
         String subCommandName = args[0];
         if (subCommandName.equalsIgnoreCase("?") || subCommandName.equalsIgnoreCase("help")) {
@@ -61,11 +61,11 @@ class MultipleCommands extends CustomCommandExecutor {
                 if (isInt(args[1]))
                     page = Integer.parseInt(args[1]);
             }
-            sendHelp(sender, page);
+            sendHelp(sender, perms, page);
             return;
         }
         if (!subCommands.containsKey(subCommandName)) {
-            sendHelp(sender, 1);
+            sendHelp(sender, perms, 1);
             throw new NoSuchCommandException();
         }
         CustomCommandExecutor subCommand = subCommands.get(subCommandName);
@@ -88,24 +88,19 @@ class MultipleCommands extends CustomCommandExecutor {
         }
     }
 
-    private void sendHelp(CommandSender sender, int pageNumber) {
+    private void sendHelp(CommandSender sender, EPermissions perms, int pageNumber) {
         StringBuilder helpString = new StringBuilder();
-        for (Entry<String, CustomCommandExecutor> entry : subCommands.entrySet())
-            helpString = helpString.append(ChatColor.AQUA).append(entry.getKey()).append(' ').append(ChatColor.LIGHT_PURPLE).append(entry.getValue().getUsage()).append(' ').append(ChatColor.WHITE).append(" - ").append(ChatColor.GOLD).append(entry.getValue().getHelp()).append('\n');
+        for (Entry<String, CustomCommandExecutor> entry : subCommands.entrySet()) {
+            if (perms.has(sender, entry.getValue().getPermission())) {
+                helpString = helpString.append(ChatColor.AQUA).append(entry.getKey()).append(' ').append(ChatColor.LIGHT_PURPLE)
+                        .append(entry.getValue().getUsage()).append(' ').append(ChatColor.WHITE).append(" - ").append(ChatColor.GOLD)
+                        .append(entry.getValue().getHelp()).append('\n');
+            }
+        }
         ChatPage page = ChatPaginator.paginate(helpString.toString(), pageNumber);
-        sender.sendMessage(ChatColor.DARK_PURPLE+"===========Help page " + pageNumber + "/" + page.getTotalPages()+"==========");
+        sender.sendMessage(ChatColor.DARK_PURPLE + "===========Help page " + pageNumber + "/" + page.getTotalPages() + "==========");
         sender.sendMessage(page.getLines());
 
-    }
-
-    @Override
-    public boolean isConsoleCommand() {
-        return true;
-    }
-
-    @Override
-    public boolean isPlayerCommand() {
-        return true;
     }
 
 }

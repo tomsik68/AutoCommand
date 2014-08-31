@@ -23,7 +23,7 @@ class CommandRegistrationManager {
                 ++commandMethods;
             }
         }
-        AutoCommandExecutor handler;
+        AutoCommandExecutorWrapper handler;
         if (commandMethods == 0) {
             throw new IllegalArgumentException("You need to annotate your command methods with @AutoCommand");
         } else if (commandMethods == 1) {
@@ -34,7 +34,7 @@ class CommandRegistrationManager {
                     exec = new SingleCommand(context, method, obj, annotation);
                 }
             }
-            handler = new AutoCommandExecutor(exec, context.getPermissions(), context.getErrorMessageProvider());
+            handler = new AutoCommandExecutorWrapper(exec, context.getPermissions(), context.getErrorMessageProvider());
         } else {
             MultipleCommands exec = new MultipleCommands(context, cmd.getDescription());
             Validate.notNull(obj);
@@ -54,7 +54,7 @@ class CommandRegistrationManager {
                     exec.registerCommand(name, new SingleCommand(context, method, obj, annotation));
                 }
             }
-            handler = new AutoCommandExecutor(exec, context.getPermissions(), context.getErrorMessageProvider());
+            handler = new AutoCommandExecutorWrapper(exec, context.getPermissions(), context.getErrorMessageProvider());
         }
         Validate.notNull(handler);
         cmd.setExecutor(handler);

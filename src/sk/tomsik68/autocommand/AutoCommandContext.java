@@ -1,11 +1,16 @@
 package sk.tomsik68.autocommand;
 
+import java.util.Collection;
+
 import org.apache.commons.lang.Validate;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 
 import sk.tomsik68.autocommand.args.ArgumentParsers;
 import sk.tomsik68.autocommand.args.ArgumentTokenizer;
+import sk.tomsik68.autocommand.context.ContextParameterProvider;
+import sk.tomsik68.autocommand.context.ContextParameterProviderFactory;
 import sk.tomsik68.autocommand.err.DefaultErrorMessageProvider;
 import sk.tomsik68.autocommand.err.ErrorMessageProvider;
 import sk.tomsik68.permsguru.EPermissions;
@@ -15,6 +20,7 @@ public class AutoCommandContext {
     private final ArgumentParsers argumentParsers;
     private final ErrorMessageProvider errorMessageProvider;
     private final CommandRegistrationManager commandRegistration;
+    private final ContextParameterProviderFactoryRegistry cppfr = new ContextParameterProviderFactoryRegistry();
     private final EPermissions perms;
 
     public AutoCommandContext(Plugin plugin, EPermissions permissionSystem, ArgumentTokenizer tokenizer, ErrorMessageProvider provider) {
@@ -55,5 +61,13 @@ public class AutoCommandContext {
 
     public EPermissions getPermissions() {
         return perms;
+    }
+
+    public void registerContextParameterProviderFactory(ContextParameterProviderFactory factory) {
+        cppfr.registerFactory(factory);
+    }
+
+    public Collection<ContextParameterProvider> getProviders(CommandSender sender) {
+        return cppfr.createProviders(sender);
     }
 }

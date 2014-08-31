@@ -1,11 +1,10 @@
 package sk.tomsik68.autocommand.err;
 
-import sk.tomsik68.autocommand.CustomCommandExecutor;
 
 public class InvalidArgumentCountException extends CommandExecutionException {
 
-    public InvalidArgumentCountException(CustomCommandExecutor exec) {
-        super(exec);
+    public InvalidArgumentCountException(String correctUsage) {
+        super(correctUsage);
     }
 
     /**

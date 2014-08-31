@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 
 import sk.tomsik68.permsguru.EPermissions;
 
-public abstract class CustomCommandExecutor {
+abstract class CustomCommandExecutor {
     protected final AutoCommandContext context;
 
     public CustomCommandExecutor(AutoCommandContext ctx) {
@@ -18,10 +18,6 @@ public abstract class CustomCommandExecutor {
     public abstract String getUsage();
 
     public abstract String getPermission();
-
-    public abstract boolean isConsoleCommand();
-
-    public abstract boolean isPlayerCommand();
 
     public abstract void runCommand(CommandSender sender, EPermissions perms, String[] args) throws Exception;
 }
